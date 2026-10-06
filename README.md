@@ -19,6 +19,7 @@ This project includes the boilerplate code for a GenLayer use case implementatio
 
 ## Requirements
 - Python >= 3.12
+- Node.js >= 18.0 (for frontend and deployment scripts)
 - [GenLayer CLI](https://github.com/genlayerlabs/genlayer-cli) globally installed: `npm install -g genlayer`
 - GenLayer Studio (for integration tests and deployment): Install from [Docs](https://docs.genlayer.com/developers/intelligent-contracts/tooling-setup#using-the-genlayer-studio) or use the hosted [GenLayer Studio](https://studio.genlayer.com/)
 
@@ -135,6 +136,21 @@ For AI coding agents (Claude Code, Cursor, etc.), the linter and direct tests pr
 ## Community
 - **[Discord](https://discord.gg/8Jm4v89VAu)**: Discussions, support, and announcements
 - **[Telegram](https://t.me/genlayer)**: Informal chats and quick updates
+
+- ## Contributing
+
+We welcome contributions from the community! Here's how to get started:
+
+1. Fork this repository
+2. Create a new branch: `git checkout -b feature/your-feature-name`
+3. Make your changes and test them locally
+4. Submit a pull request with a clear description of your changes
+
+### Contribution Guidelines
+- Follow the existing code style
+- Add tests for new features
+- Update documentation when needed
+- Keep PRs focused and atomic
 
 ## Documentation
 For detailed information, see our [documentation](https://docs.genlayer.com/).
