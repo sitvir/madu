@@ -4,9 +4,7 @@ import {
   TransactionHash,
   GenLayerClient,
   DecodedDeployData,
-  GenLayerChain,
 } from "genlayer-js/types";
-import { localnet } from "genlayer-js/chains";
 
 export const isSuccessfulDeploymentReceipt = (receipt: {
   status?: number | string;
@@ -19,6 +17,29 @@ export const isSuccessfulDeploymentReceipt = (receipt: {
     receipt.statusName === "ACCEPTED" ||
     receipt.statusName === "FINALIZED"
   );
+};
+
+type DeploymentReceiptLike = {
+  data?: { contract_address?: string | null } | null;
+  txDataDecoded?: unknown;
+};
+
+/**
+ * Extract the deployed contract address from a deploy receipt.
+ *
+ * Different GenLayer networks populate different receipt fields: localnet and
+ * hosted Studio (studionet) return it in `receipt.data.contract_address`,
+ * while other chains expose it via the decoded deploy data. Checking only one
+ * field based on the chain id made `genlayer deploy` report an `undefined`
+ * address on Studionet (issue #104), so try both.
+ */
+export const getDeployedContractAddress = (
+  receipt: DeploymentReceiptLike,
+): string | undefined => {
+  const decoded = (receipt.txDataDecoded as DecodedDeployData | undefined)
+    ?.contractAddress;
+  const fromData = receipt.data?.contract_address ?? undefined;
+  return decoded || fromData || undefined;
 };
 
 export default async function main(client: GenLayerClient<any>) {
@@ -44,10 +65,7 @@ export default async function main(client: GenLayerClient<any>) {
       throw new Error(`Deployment failed. Receipt: ${JSON.stringify(receipt)}`);
     }
 
-    const deployedContractAddress =
-      (client.chain as GenLayerChain).id === localnet.id
-        ? receipt.data?.contract_address
-        : (receipt.txDataDecoded as DecodedDeployData)?.contractAddress;
+    const deployedContractAddress = getDeployedContractAddress(receipt);
 
     if (!deployedContractAddress) {
       throw new Error("Deployment receipt did not contain a contract address");
